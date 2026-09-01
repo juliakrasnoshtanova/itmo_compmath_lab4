@@ -1,0 +1,13 @@
+%%{init: {"flowchart": {"nodeSpacing": 24, "rankSpacing": 30, "wrappingWidth": 460}, "themeVariables": {"fontSize": "17px"}}}%%
+flowchart TD
+    START(["Начало"])
+    START --> TITLE["Линейная аппроксимация<br/>linear(x, y),  linear_f(x) = a · x + b"]
+    TITLE --> INPUT[/"Ввод: x, y"/]
+    INPUT --> INIT["Подготовка:<br/>n ← len(x)<br/>sx ← sum(x), sy ← sum(y)<br/>sxx ← 0, sxy ← 0<br/>i ← 0"]
+    INIT --> CHECK_I{"i < n?"}
+    CHECK_I -- "Да" --> SUMS["Накопить суммы:<br/>sxx ← sxx + x<sub>i</sub><sup>2</sup><br/>sxy ← sxy + x<sub>i</sub> · y<sub>i</sub><br/>i ← i + 1"]
+    SUMS --> CHECK_I
+    CHECK_I -- "Нет" --> DELTA["Определители:<br/>delta ← sxx · n - sx · sx<br/>delta1 ← sxy · n - sx · sy<br/>delta2 ← sxx · sy - sx · sxy"]
+    DELTA --> COEFFS["Коэффициенты:<br/>a ← delta1 / delta<br/>b ← delta2 / delta"]
+    COEFFS --> OUT_OK[/"Вывод: a, b"/]
+    OUT_OK --> END_OK(["Конец"])

@@ -1,0 +1,33 @@
+%%{init: {"flowchart": {"nodeSpacing": 24, "rankSpacing": 30, "wrappingWidth": 460}, "themeVariables": {"fontSize": "17px"}}}%%
+flowchart TD
+    START(["Начало"])
+    START --> TITLE["Полиномиальная аппроксимация степени p<br/>polynom(x, y, p),  polynom_f(x) = a<sub>0</sub> + a<sub>1</sub> · x + … + a<sub>p</sub> · x<sup>p</sup>"]
+    TITLE --> INPUT[/"Ввод: x, y, p"/]
+    INPUT --> INIT["Подготовка:<br/>n ← len(x)<br/>b ← []<br/>k ← 0"]
+
+    INIT --> CHECK_BK{"k ≤ p?"}
+    CHECK_BK -- "Да" --> BINIT["sxy ← 0, i ← 0"]
+    BINIT --> CHECK_BI{"i < n?"}
+    CHECK_BI -- "Да" --> BSUM["sxy ← sxy + x<sub>i</sub><sup>k</sup> · y<sub>i</sub><br/>i ← i + 1"]
+    BSUM --> CHECK_BI
+    CHECK_BI -- "Нет" --> BSTORE["b ← b + [sxy]<br/>k ← k + 1"]
+    BSTORE --> CHECK_BK
+
+    CHECK_BK -- "Нет" --> AINIT["a ← []<br/>k ← 0"]
+    AINIT --> CHECK_AK{"k ≤ p?"}
+    CHECK_AK -- "Да" --> JINIT["sx ← [], j ← 0"]
+    JINIT --> CHECK_J{"j ≤ p?"}
+    CHECK_J -- "Да" --> IINIT["sx ← sx + [0], i ← 0"]
+    IINIT --> CHECK_AI{"i < n?"}
+    CHECK_AI -- "Да" --> ASUM["sx<sub>j</sub> ← sx<sub>j</sub> + x<sub>i</sub><sup>k + j</sup><br/>i ← i + 1"]
+    ASUM --> CHECK_AI
+    CHECK_AI -- "Нет" --> NEXT_J["j ← j + 1"]
+    NEXT_J --> CHECK_J
+    CHECK_J -- "Нет" --> ASTORE["a ← a + [sx]<br/>k ← k + 1"]
+    ASTORE --> CHECK_AK
+
+    NEXT_J ~~~ SOLVE
+    ASUM ~~~ SOLVE
+    CHECK_AK -- "Нет" --> SOLVE["Решить систему нормальных уравнений<br/>методом Гаусса: gauss(a, b)"]
+    SOLVE --> OUT_OK[/"Вывод: результат gauss(a, b)<br/>(коэффициенты a<sub>0</sub> … a<sub>p</sub> или None)"/]
+    OUT_OK --> END_OK(["Конец"])

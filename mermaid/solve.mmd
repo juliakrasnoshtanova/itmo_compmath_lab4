@@ -1,0 +1,29 @@
+%%{init: {"flowchart": {"nodeSpacing": 24, "rankSpacing": 30, "wrappingWidth": 460}, "themeVariables": {"fontSize": "17px"}}}%%
+flowchart TD
+    START(["Начало"])
+    START --> TITLE["Общий ход расчёта<br/>solve"]
+    TITLE --> INPUT[/"Ввод: таблица точек"/]
+    INPUT --> PARSE["Разбор таблицы:<br/>points ← parse_rows(таблица)<br/>n ← points.count"]
+    PARSE --> CHECK_MIN{"n < 8?"}
+    CHECK_MIN -- "Да" --> ERR_MIN[/"Вывод: нужно не меньше 8 точек"/]
+    ERR_MIN --> END_FAIL1(["Конец"])
+    CHECK_MIN -- "Нет" --> CHECK_MAX{"n > 12?"}
+    CHECK_MAX -- "Да" --> ERR_MAX[/"Вывод: слишком много точек,<br/>допустимо не больше 12"/]
+    ERR_MAX --> END_FAIL2(["Конец"])
+    CHECK_MAX -- "Нет" --> CHECK_X{"все значения x совпадают?"}
+    CHECK_X -- "Да" --> ERR_X[/"Вывод: все значения x совпадают,<br/>приблизить такие данные нельзя"/]
+    ERR_X --> END_FAIL3(["Конец"])
+
+    CHECK_X -- "Нет" --> INIT["Подготовка:<br/>results ← []<br/>k ← 0"]
+    INIT --> CHECK_K{"k < len(MODELS)?"}
+    CHECK_K -- "Да" --> FIT["Подобрать модель:<br/>model ← MODELS<sub>k</sub><br/>results ← results + [fit_model(points, model)]<br/>k ← k + 1"]
+    FIT --> CHECK_K
+
+    CHECK_K -- "Нет" --> PEARSON["Коэффициент корреляции Пирсона:<br/>r ← pearson_coefficient(points) = pirson(x, y)<br/>при ошибке r ← nan"]
+    PEARSON --> FITTED["fitted ← successful(results)<br/>(построенные модели)"]
+    FITTED --> CHECK_FITTED{"fitted пуст?"}
+    CHECK_FITTED -- "Да" --> ERR_NONE[/"Вывод: results, r,<br/>ни одна модель не применима к этим данным"/]
+    ERR_NONE --> END_FAIL4(["Конец"])
+    CHECK_FITTED -- "Нет" --> BEST["Наилучшая модель:<br/>best ← best_fit(results) =<br/>элемент fitted с наименьшим rms_deviation"]
+    BEST --> OUT_OK[/"Вывод: results, r, best,<br/>таблица отклонений best, график"/]
+    OUT_OK --> END_OK(["Конец"])
