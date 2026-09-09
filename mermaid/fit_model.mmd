@@ -5,7 +5,7 @@ flowchart TD
     TITLE --> INPUT[/"Ввод: points (x, y, n), model"/]
     INPUT --> CHECK_MIN{"n < model.min_points?"}
     CHECK_MIN -- "Да" --> ERR_MIN[/"Вывод: модель не рассчитана,<br/>нужно не меньше model.min_points точек"/]
-    ERR_MIN --> END_FAIL1(["Конец"])
+    ERR_MIN --> END
 
     CHECK_MIN -- "Нет" --> ISSUES["issues ← []"]
     ISSUES --> CHECK_PX{"model.positive_x<br/>и min(x) ≤ 0?"}
@@ -16,19 +16,19 @@ flowchart TD
     CHECK_PY -- "Нет" --> CHECK_ISSUES
     ADD_Y --> CHECK_ISSUES{"issues не пуст?"}
     CHECK_ISSUES -- "Да" --> ERR_DOMAIN[/"Вывод: модель не рассчитана,<br/>линеаризация невозможна: issues"/]
-    ERR_DOMAIN --> END_FAIL2(["Конец"])
+    ERR_DOMAIN --> END
 
     CHECK_ISSUES -- "Нет" --> FIT["Подбор коэффициентов моделью:<br/>raw ← model.fit(x, y)"]
     FIT --> CHECK_EXC{"возникла ошибка<br/>(ValueError, ZeroDivisionError,<br/>OverflowError)?"}
     CHECK_EXC -- "Да" --> ERR_EXC[/"Вывод: модель не рассчитана,<br/>не удалось решить систему"/]
-    ERR_EXC --> END_FAIL3(["Конец"])
+    ERR_EXC --> END
     CHECK_EXC -- "Нет" --> CHECK_NONE{"raw = None?"}
     CHECK_NONE -- "Да" --> ERR_NONE[/"Вывод: модель не рассчитана,<br/>система уравнений вырождена"/]
-    ERR_NONE --> END_FAIL4(["Конец"])
+    ERR_NONE --> END
     CHECK_NONE -- "Нет" --> COEFFS["coefficients ← float(raw)"]
     COEFFS --> CHECK_FIN{"все coefficients конечны?"}
     CHECK_FIN -- "Нет" --> ERR_FIN[/"Вывод: модель не рассчитана,<br/>коэффициенты не определены"/]
-    ERR_FIN --> END_FAIL5(["Конец"])
+    ERR_FIN --> END
 
     CHECK_FIN -- "Да" --> VINIT["Подготовка оценки качества:<br/>values ← [], deviations ← []<br/>i ← 0"]
     VINIT --> CHECK_I{"i < n?"}
@@ -36,7 +36,8 @@ flowchart TD
     VBODY --> CHECK_I
     CHECK_I -- "Нет" --> CHECK_VAL{"values вычислены<br/>без ошибок и конечны?"}
     CHECK_VAL -- "Нет" --> ERR_VAL[/"Вывод: модель не рассчитана,<br/>не определена в узлах таблицы"/]
-    ERR_VAL --> END_FAIL6(["Конец"])
+    ERR_VAL --> END
     CHECK_VAL -- "Да" --> METRICS["Оценка качества:<br/>sum_squares ← summa_kv_otkl(y, values)<br/>rms_deviation ← srednekvadr_otkl(y, values)<br/>determination ← determination_coef(y, values)<br/>при ZeroDivisionError determination ← nan"]
     METRICS --> OUT_OK[/"Вывод: coefficients, values, deviations,<br/>sum_squares, rms_deviation, determination"/]
-    OUT_OK --> END_OK(["Конец"])
+    OUT_OK --> END
+    END(["Конец"])

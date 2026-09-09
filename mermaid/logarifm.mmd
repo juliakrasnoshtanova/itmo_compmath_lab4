@@ -5,7 +5,7 @@ flowchart TD
     TITLE --> INPUT[/"Ввод: x, y"/]
     INPUT --> CHECK_DOMAIN{"vse_polozh(x)?"}
     CHECK_DOMAIN -- "Нет" --> ERR_DOMAIN[/"Вывод: None"/]
-    ERR_DOMAIN --> END_FAIL(["Конец"])
+    ERR_DOMAIN --> END
     CHECK_DOMAIN -- "Да" --> INIT["Подготовка:<br/>n ← len(x)<br/>X ← [], Y ← []<br/>i ← 0"]
     INIT --> CHECK_I{"i < n?"}
     CHECK_I -- "Да" --> TRANS["Линеаризовать точку:<br/>X<sub>i</sub> ← ln x<sub>i</sub><br/>Y<sub>i</sub> ← y<sub>i</sub><br/>i ← i + 1"]
@@ -13,4 +13,5 @@ flowchart TD
     CHECK_I -- "Нет" --> LIN["Линейное приближение X, Y:<br/>A, B ← linear(X, Y)"]
     LIN --> COEFFS["Обратная замена:<br/>a ← A<br/>b ← B"]
     COEFFS --> OUT_OK[/"Вывод: a, b"/]
-    OUT_OK --> END_OK(["Конец"])
+    OUT_OK --> END
+    END(["Конец"])
